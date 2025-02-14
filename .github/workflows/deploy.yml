@@ -1,0 +1,29 @@
+name: Deploy to GitHub Pages
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy files
+        run: |
+            VERSION=${{ github.ref_name }}
+            mkdir -p "./pag/${VERSION}"
+            cp -r ./en "./pag/${VERSION}/"
+            cp -r ./ru "./pag/${VERSION}/"
+            cp -r index.html "./pag/${VERSION}/"
+
+        
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./pag
+          keep_files: true
